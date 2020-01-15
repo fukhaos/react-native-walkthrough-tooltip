@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Dimensions,
-  InteractionManager,
-  Modal,
-  TouchableWithoutFeedback,
-  View,
+    Dimensions,
+    InteractionManager,
+    Modal,
+    Text,
+    TouchableWithoutFeedback,
+    View,
+    TouchableOpacity
 } from 'react-native';
 import rfcIsEqual from 'react-fast-compare';
 import {
@@ -22,6 +24,7 @@ import {
 } from './geom';
 import styleGenerator from './styles';
 import TooltipChildrenContext from './tooltip-children.context';
+import * as Animatable from 'react-native-animatable';
 
 export { TooltipChildrenContext };
 
@@ -376,10 +379,13 @@ class Tooltip extends Component {
     const hasChildren = React.Children.count(this.props.children) > 0;
 
     return (
-      <TouchableWithoutFeedback onPress={this.props.onClose}>
+      <TouchableWithoutFeedback >
         <View style={generatedStyles.containerStyle}>
           <View style={[generatedStyles.backgroundStyle]}>
-            <View style={generatedStyles.tooltipStyle}>
+            <TouchableOpacity onPress={this.props.onClose}style={{position: 'absolute', top: 20, right: 20}}>
+              <Text style={{fontFamily: 'GothamRounded-Bold', color: 'white'}}>X</Text>
+            </TouchableOpacity>
+            <Animatable.View animation="fadeIn" style={generatedStyles.tooltipStyle}>
               {hasChildren ? <View style={generatedStyles.arrowStyle} /> : null}
               <View
                 onLayout={this.measureContent}
@@ -387,7 +393,7 @@ class Tooltip extends Component {
               >
                 {this.props.content}
               </View>
-            </View>
+            </Animatable.View>
           </View>
           {hasChildren && this.props.showChildInTooltip
             ? this.renderChildInTooltip()
